@@ -1,4 +1,4 @@
-.PHONY: build, serve, serve-cfg
+.PHONY: build, serve, serve-cfg, linkedlist
 
 build:
 	go build ./...
@@ -8,3 +8,6 @@ serve:
 
 serve-cfg:
 	go run ./... serve --config ./configuration.yaml
+
+linkedlist:
+	go run ./... linkedlist
