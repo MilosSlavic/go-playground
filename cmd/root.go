@@ -14,9 +14,10 @@ var cfgFile string
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "go-playground",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application.`,
+	Short: "Playground for Go backend patterns and data structures",
+	Long: `go-playground is a collection of small, self-contained Go backend
+examples (HTTP server, data structures, CLI/config wiring) used to
+demonstrate idiomatic Go patterns.`,
 }
 
 func Execute() {

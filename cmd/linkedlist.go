@@ -1,12 +1,12 @@
 /*
-Copyright © 2026 NAME HERE <EMAIL ADDRESS>
+Copyright © 2026 Milos Slavic <m.slavic@outlook.com>
 */
 package cmd
 
 import (
 	"fmt"
 
-	dsa "github.com/MilosSlavic/go-playground/pkg/linkedlist"
+	"github.com/MilosSlavic/go-playground/pkg/linkedlist"
 	"github.com/spf13/cobra"
 )
 
@@ -29,7 +29,7 @@ func init() {
 }
 
 func linkedListExample() {
-	ll := dsa.NewLinkedList()
+	ll := linkedlist.NewLinkedList()
 	ll.Add(&product{name: "Milk"})
 	item := &product{name: "Bread"}
 	ll.Add(item)
@@ -42,7 +42,7 @@ func linkedListExample() {
 	printLinkedList(ll)
 }
 
-func printLinkedList(ll *dsa.LinkedList) {
+func printLinkedList(ll *linkedlist.LinkedList) {
 	for value := range ll.All() {
 		item := value.(*product)
 		fmt.Println(item.name)

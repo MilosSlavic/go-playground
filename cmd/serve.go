@@ -16,20 +16,18 @@ import (
 // serveCmd represents the serve command
 var serveCmd = &cobra.Command{
 	Use:   "serve",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Start the HTTP server",
+	Long: `Start the HTTP server on the configured port.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+The port can be set via the --port flag, a config file (see --config),
+or the GOPLG_PORT environment variable.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		port := viper.GetInt("port")
 		fmt.Printf("Starting server on port: %d\n", port)
 		return nil
 	},
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-		return initilizeConfig(cmd)
+		return initializeConfig(cmd)
 	},
 }
 
@@ -38,7 +36,7 @@ func init() {
 	serveCmd.Flags().Int("port", 8080, "Port to run the server on")
 }
 
-func initilizeConfig(cmd *cobra.Command) error {
+func initializeConfig(cmd *cobra.Command) error {
 	viper.SetEnvPrefix("GOPLG")
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "*", "-", "*"))
 	viper.AutomaticEnv()
@@ -55,8 +53,7 @@ func initilizeConfig(cmd *cobra.Command) error {
 	}
 
 	if err := viper.ReadInConfig(); err != nil {
-		var fileNotFound viper.ConfigFileNotFoundError
-		if !errors.As(err, &fileNotFound) {
+		if _, ok := errors.AsType[viper.ConfigFileNotFoundError](err); !ok {
 			return err
 		}
 	}

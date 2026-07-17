@@ -1,38 +1,37 @@
-// Package linkedlist implements a singly linked list of any values.
-//
-// See the generic package (pkg/linkedlist/generic) for a type-safe
-// equivalent built with Go generics.
-package linkedlist
+// Package generic implements a type-safe singly linked list using Go
+// generics. See the sibling package (pkg/linkedlist) for the any-based
+// equivalent.
+package generic
 
 import "iter"
 
-type linkedNode struct {
-	next *linkedNode
-	Item any
+type linkedNode[T comparable] struct {
+	next *linkedNode[T]
+	Item T
 }
 
-// LinkedList is a singly linked list holding values of any type.
-type LinkedList struct {
-	head  *linkedNode
-	tail  *linkedNode
+// LinkedList is a singly linked list holding values of type T.
+type LinkedList[T comparable] struct {
+	head  *linkedNode[T]
+	tail  *linkedNode[T]
 	count int
 }
 
-func newLinkedNode(item any) *linkedNode {
-	return &linkedNode{
+func newLinkedNode[T comparable](item T) *linkedNode[T] {
+	return &linkedNode[T]{
 		Item: item,
 	}
 }
 
 // NewLinkedList returns an empty LinkedList.
-func NewLinkedList() *LinkedList {
-	return &LinkedList{}
+func NewLinkedList[T comparable]() *LinkedList[T] {
+	return &LinkedList[T]{}
 }
 
 // NewLinkedListUsingSlice returns a LinkedList populated with the elements
 // of slice, in order.
-func NewLinkedListUsingSlice(slice *[]any) *LinkedList {
-	ll := LinkedList{}
+func NewLinkedListUsingSlice[T comparable](slice *[]T) *LinkedList[T] {
+	ll := LinkedList[T]{}
 	for _, value := range *slice {
 		ll.Add(value)
 	}
@@ -40,8 +39,14 @@ func NewLinkedListUsingSlice(slice *[]any) *LinkedList {
 	return &ll
 }
 
+// zeroValue returns the zero value of T.
+func zeroValue[T comparable]() T {
+	var zero T
+	return zero
+}
+
 // Add appends item to the end of the list.
-func (ll *LinkedList) Add(item any) {
+func (ll *LinkedList[T]) Add(item T) {
 	ll.count++
 	if ll.head == nil {
 		ll.head = newLinkedNode(item)
@@ -54,7 +59,7 @@ func (ll *LinkedList) Add(item any) {
 }
 
 // AddFirst inserts item at the head of the list.
-func (ll *LinkedList) AddFirst(item any) {
+func (ll *LinkedList[T]) AddFirst(item T) {
 	ll.count++
 	first := newLinkedNode(item)
 	first.next = ll.head
@@ -64,9 +69,9 @@ func (ll *LinkedList) AddFirst(item any) {
 	}
 }
 
-// Delete removes all nodes whose Item equals item, comparing with ==.
-func (ll *LinkedList) Delete(item any) {
-	var prev *linkedNode
+// Delete removes all nodes whose Item equals item.
+func (ll *LinkedList[T]) Delete(item T) {
+	var prev *linkedNode[T]
 	node := ll.head
 
 	for node != nil {
@@ -89,7 +94,7 @@ func (ll *LinkedList) Delete(item any) {
 }
 
 // DeleteAt removes the node at index. Out-of-range indexes are a no-op.
-func (ll *LinkedList) DeleteAt(index int) {
+func (ll *LinkedList[T]) DeleteAt(index int) {
 	if index < 0 || index >= ll.count {
 		return
 	}
@@ -118,30 +123,30 @@ func (ll *LinkedList) DeleteAt(index int) {
 
 // DeleteLast removes the tail node. O(n): the list is singly linked, so
 // finding the new tail requires a full traversal from head.
-func (ll *LinkedList) DeleteLast() {
+func (ll *LinkedList[T]) DeleteLast() {
 	ll.DeleteAt(ll.count - 1)
 }
 
-// GetFirst returns the head item, or nil if the list is empty.
-func (ll *LinkedList) GetFirst() any {
+// GetFirst returns the head item, or the zero value of T if the list is empty.
+func (ll *LinkedList[T]) GetFirst() T {
 	if ll.head == nil {
-		return nil
+		return zeroValue[T]()
 	}
 	return ll.head.Item
 }
 
-// GetLast returns the tail item, or nil if the list is empty.
-func (ll *LinkedList) GetLast() any {
+// GetLast returns the tail item, or the zero value of T if the list is empty.
+func (ll *LinkedList[T]) GetLast() T {
 	if ll.tail == nil {
-		return nil
+		return zeroValue[T]()
 	}
 	return ll.tail.Item
 }
 
-// GetAt returns the item at index, or nil if index is out of range.
-func (ll *LinkedList) GetAt(index int) any {
+// GetAt returns the item at index, or the zero value of T if index is out of range.
+func (ll *LinkedList[T]) GetAt(index int) T {
 	if index < 0 || index >= ll.count {
-		return nil
+		return zeroValue[T]()
 	}
 
 	if index == 0 {
@@ -156,8 +161,8 @@ func (ll *LinkedList) GetAt(index int) any {
 	return node.Item
 }
 
-// Exists reports whether item is present in the list, comparing with ==.
-func (ll *LinkedList) Exists(item any) bool {
+// Exists reports whether item is present in the list.
+func (ll *LinkedList[T]) Exists(item T) bool {
 	var i int = 0
 	node := ll.head
 	for i < ll.count {
@@ -173,15 +178,15 @@ func (ll *LinkedList) Exists(item any) bool {
 }
 
 // Clear removes all items from the list.
-func (ll *LinkedList) Clear() {
+func (ll *LinkedList[T]) Clear() {
 	ll.head = nil
 	ll.tail = nil
 	ll.count = 0
 }
 
 // All returns an iterator over the list's items, from head to tail.
-func (ll *LinkedList) All() iter.Seq[any] {
-	return func(yield func(any) bool) {
+func (ll *LinkedList[T]) All() iter.Seq[T] {
+	return func(yield func(T) bool) {
 		node := ll.head
 		for {
 			if node == nil {
@@ -198,6 +203,6 @@ func (ll *LinkedList) All() iter.Seq[any] {
 }
 
 // GetCount returns the number of items in the list.
-func (ll *LinkedList) GetCount() int {
+func (ll *LinkedList[T]) GetCount() int {
 	return ll.count
 }

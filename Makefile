@@ -1,4 +1,4 @@
-.PHONY: build, serve, serve-cfg, linkedlist
+.PHONY: build, serve, serve-cfg, linkedlist, generic-linkedlist
 
 build:
 	go build ./...
@@ -11,3 +11,6 @@ serve-cfg:
 
 linkedlist:
 	go run ./... linkedlist
+
+generic-linkedlist:
+	go run ./... genericLinkedlist

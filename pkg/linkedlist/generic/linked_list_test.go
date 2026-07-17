@@ -1,10 +1,10 @@
-package linkedlist_test
+package generic_test
 
 import (
 	"slices"
 	"testing"
 
-	linkedlist "github.com/MilosSlavic/go-playground/pkg/linkedlist"
+	generic "github.com/MilosSlavic/go-playground/pkg/linkedlist/generic"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -13,14 +13,14 @@ func TestLinkedList_NewLinkedListUsingSlice(t *testing.T) {
 	data[0] = 1
 	data[1] = 2
 	data[2] = 3
-	ll := linkedlist.NewLinkedListUsingSlice(&data)
+	ll := generic.NewLinkedListUsingSlice(&data)
 
 	assert.Equal(t, 3, ll.GetCount())
 	assert.Equal(t, []any{1, 2, 3}, slices.Collect(ll.All()))
 }
 
 func TestLinkedList_Add(t *testing.T) {
-	ll := linkedlist.NewLinkedList()
+	ll := generic.NewLinkedList[int]()
 	ll.Add(1)
 	ll.Add(2)
 	ll.Add(3)
@@ -29,7 +29,7 @@ func TestLinkedList_Add(t *testing.T) {
 }
 
 func TestLinkedList_AddFirst(t *testing.T) {
-	ll := linkedlist.NewLinkedList()
+	ll := generic.NewLinkedList[int]()
 	ll.Add(100)
 	ll.AddFirst(99)
 
@@ -38,7 +38,7 @@ func TestLinkedList_AddFirst(t *testing.T) {
 }
 
 func TestLinkedList_Delete(t *testing.T) {
-	ll := linkedlist.NewLinkedList()
+	ll := generic.NewLinkedList[int64]()
 	ll.Add(100)
 	ll.Add(99)
 
@@ -46,12 +46,12 @@ func TestLinkedList_Delete(t *testing.T) {
 
 	first := ll.GetFirst()
 
-	assert.Equal(t, 99, first)
+	assert.Equal(t, int64(99), first)
 	assert.Equal(t, 1, ll.GetCount())
 }
 
 func TestLinkedList_DeleteAt_Middle(t *testing.T) {
-	ll := linkedlist.NewLinkedList()
+	ll := generic.NewLinkedList[int64]()
 	ll.Add(100)
 	ll.Add(99)
 	ll.Add(98)
@@ -59,13 +59,13 @@ func TestLinkedList_DeleteAt_Middle(t *testing.T) {
 	ll.DeleteAt(1)
 
 	assert.Equal(t, 2, ll.GetCount())
-	assert.Equal(t, []any{100, 98}, slices.Collect(ll.All()))
-	assert.Equal(t, 100, ll.GetFirst())
-	assert.Equal(t, 98, ll.GetLast())
+	assert.Equal(t, []int64{100, 98}, slices.Collect(ll.All()))
+	assert.Equal(t, int64(100), ll.GetFirst())
+	assert.Equal(t, int64(98), ll.GetLast())
 }
 
 func TestLinkedList_DeleteAt_First(t *testing.T) {
-	ll := linkedlist.NewLinkedList()
+	ll := generic.NewLinkedList[int64]()
 	ll.Add(100)
 	ll.Add(99)
 	ll.Add(98)
@@ -73,13 +73,13 @@ func TestLinkedList_DeleteAt_First(t *testing.T) {
 	ll.DeleteAt(0)
 
 	assert.Equal(t, 2, ll.GetCount())
-	assert.Equal(t, []any{99, 98}, slices.Collect(ll.All()))
-	assert.Equal(t, 99, ll.GetFirst())
-	assert.Equal(t, 98, ll.GetLast())
+	assert.Equal(t, []int64{99, 98}, slices.Collect(ll.All()))
+	assert.Equal(t, int64(99), ll.GetFirst())
+	assert.Equal(t, int64(98), ll.GetLast())
 }
 
 func TestLinkedList_DeleteAt_Last(t *testing.T) {
-	ll := linkedlist.NewLinkedList()
+	ll := generic.NewLinkedList[int64]()
 	ll.Add(100)
 	ll.Add(99)
 	ll.Add(98)
@@ -87,13 +87,13 @@ func TestLinkedList_DeleteAt_Last(t *testing.T) {
 	ll.DeleteAt(2)
 
 	assert.Equal(t, 2, ll.GetCount())
-	assert.Equal(t, []any{100, 99}, slices.Collect(ll.All()))
-	assert.Equal(t, 100, ll.GetFirst())
-	assert.Equal(t, 99, ll.GetLast())
+	assert.Equal(t, []int64{100, 99}, slices.Collect(ll.All()))
+	assert.Equal(t, int64(100), ll.GetFirst())
+	assert.Equal(t, int64(99), ll.GetLast())
 }
 
 func TestLinkedList_DeleteAt_SingleElement(t *testing.T) {
-	ll := linkedlist.NewLinkedList()
+	ll := generic.NewLinkedList[int64]()
 	ll.Add(100)
 
 	ll.DeleteAt(0)
@@ -102,12 +102,12 @@ func TestLinkedList_DeleteAt_SingleElement(t *testing.T) {
 	assert.Empty(t, slices.Collect(ll.All()))
 
 	ll.Add(99)
-	assert.Equal(t, 99, ll.GetFirst())
-	assert.Equal(t, 99, ll.GetLast())
+	assert.Equal(t, int64(99), ll.GetFirst())
+	assert.Equal(t, int64(99), ll.GetLast())
 }
 
 func TestLinkedList_DeleteAt_OutOfBounds(t *testing.T) {
-	ll := linkedlist.NewLinkedList()
+	ll := generic.NewLinkedList[int64]()
 	ll.Add(100)
 	ll.Add(99)
 
@@ -115,11 +115,11 @@ func TestLinkedList_DeleteAt_OutOfBounds(t *testing.T) {
 	ll.DeleteAt(2)
 
 	assert.Equal(t, 2, ll.GetCount())
-	assert.Equal(t, []any{100, 99}, slices.Collect(ll.All()))
+	assert.Equal(t, []int64{100, 99}, slices.Collect(ll.All()))
 }
 
 func TestLinkedList_DeleteLast(t *testing.T) {
-	ll := linkedlist.NewLinkedList()
+	ll := generic.NewLinkedList[int64]()
 	ll.Add(100)
 	ll.Add(99)
 	ll.Add(98)
@@ -127,8 +127,8 @@ func TestLinkedList_DeleteLast(t *testing.T) {
 	ll.DeleteLast()
 
 	assert.Equal(t, 2, ll.GetCount())
-	assert.Equal(t, []any{100, 99}, slices.Collect(ll.All()))
-	assert.Equal(t, 99, ll.GetLast())
+	assert.Equal(t, []int64{100, 99}, slices.Collect(ll.All()))
+	assert.Equal(t, int64(99), ll.GetLast())
 
 	ll.DeleteLast()
 	ll.DeleteLast()
@@ -138,61 +138,68 @@ func TestLinkedList_DeleteLast(t *testing.T) {
 }
 
 func TestLinkedList_GetFirst(t *testing.T) {
-	ll := linkedlist.NewLinkedList()
-	ll.Add(100)
-	ll.Add(99)
+	ll := generic.NewLinkedList[string]()
+	ll.Add("100")
+	ll.Add("99")
 
-	assert.Equal(t, 100, ll.GetFirst())
+	assert.Equal(t, "100", ll.GetFirst())
 }
 
 func TestLinkedList_GetLast(t *testing.T) {
-	ll := linkedlist.NewLinkedList()
-	ll.Add(100)
-	ll.Add(99)
+	ll := generic.NewLinkedList[string]()
+	ll.Add("100")
+	ll.Add("99")
 
-	assert.Equal(t, 99, ll.GetLast())
+	assert.Equal(t, "99", ll.GetLast())
 }
 
 func TestLinkedList_GetAt(t *testing.T) {
-	ll := linkedlist.NewLinkedList()
-	ll.Add(100)
-	ll.Add(99)
-	ll.Add(98)
+	ll := generic.NewLinkedList[string]()
+	ll.Add("100")
+	ll.Add("99")
+	ll.Add("98")
 
-	assert.Equal(t, 99, ll.GetAt(1))
+	assert.Equal(t, "99", ll.GetAt(1))
+}
+
+type animal struct {
+	name string
 }
 
 func TestLinkedList_Exists(t *testing.T) {
-	ll := linkedlist.NewLinkedList()
-	ll.Add(100)
-	ll.Add(99)
+	ll := generic.NewLinkedList[*animal]()
+	cow := &animal{name: "Cow"}
+	dog := &animal{name: "Dog"}
+	ll.Add(cow)
+	ll.Add(dog)
 
-	assert.True(t, ll.Exists(99))
+	assert.True(t, ll.Exists(dog))
 }
 
 func TestLinkedList_Clear(t *testing.T) {
-	ll := linkedlist.NewLinkedList()
-	ll.Add(100)
-	ll.Add(99)
-
+	ll := generic.NewLinkedList[*animal]()
+	cow := &animal{name: "Cow"}
+	dog := &animal{name: "Dog"}
+	ll.Add(cow)
+	ll.Add(dog)
 	ll.Clear()
 
-	assert.False(t, ll.Exists(100))
+	assert.False(t, ll.Exists(dog))
 	assert.Equal(t, 0, ll.GetCount())
 }
 
 func TestLinkedList_All(t *testing.T) {
-	ll := linkedlist.NewLinkedList()
+	ll := generic.NewLinkedList[int16]()
 	ll.Add(100)
 	ll.Add(99)
 
 	actual := slices.Collect(ll.All())
 
-	assert.Equal(t, []any{100, 99}, actual)
+	assert.Equal(t, []int16{100, 99}, actual)
 }
 
 func TestLinkedList_GetCount(t *testing.T) {
-	ll := linkedlist.NewLinkedList()
+	ll := generic.NewLinkedList[int]()
 	ll.Add(100)
 	ll.Add(99)
 
